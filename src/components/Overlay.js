@@ -16,6 +16,7 @@ import { getBrowser, isLegacy, log } from '../modules/helpers';
 import LIFECYCLE from '../constants/lifecycle';
 
 import Spotlight from './Spotlight';
+import OverlaySvg from './OverlaySvg';
 
 export default class JoyrideOverlay extends React.Component {
   _isMounted = false;
@@ -196,12 +197,18 @@ export default class JoyrideOverlay extends React.Component {
     const stylesOverlay = {
       cursor: disableOverlayClose ? 'default' : 'pointer',
       height: getDocumentHeight(),
-      pointerEvents: mouseOverSpotlight ? 'none' : 'auto',
+      // pointerEvents: mouseOverSpotlight ? 'none' : 'auto',
       ...baseStyles,
     };
 
+    const {
+      backgroundColor: backgroundColorSpotlightStyles,
+      opacity,
+      ...spotlightStylesSvg
+    } = this.spotlightStyles;
+
     let spotlight = placement !== 'center' && showSpotlight && (
-      <Spotlight styles={this.spotlightStyles} />
+      <Spotlight styles={spotlightStylesSvg} />
     );
 
     // Hack for Safari bug with mix-blend-mode with z-index
@@ -212,10 +219,33 @@ export default class JoyrideOverlay extends React.Component {
       delete stylesOverlay.backgroundColor;
     }
 
+    console.log({ type: 'JR Overlay', stylesOverlay, spotlightStyles: this.spotlightStyles });
+
+    const { backgroundColor, mixBlendMode, ...stylesOverlaySvg } = stylesOverlay;
+
     return (
-      <div className="react-joyride__overlay" style={stylesOverlay} onClick={onClickOverlay}>
+      <>
+        <OverlaySvg
+          className="react-joyride__overlay"
+          styles={{
+            ...stylesOverlaySvg,
+            pointerEvents: 'none',
+            width: '100vw',
+            height: '100vh',
+            opacity: 0.3,
+          }}
+          pstyles={{
+            pointerEvents: 'auto',
+          }}
+          width={this.spotlightStyles.width}
+          height={this.spotlightStyles.height}
+          x={this.spotlightStyles.left}
+          y={this.spotlightStyles.top}
+          r={this.spotlightStyles.borderRadius}
+          onClick={onClickOverlay}
+        />
         {spotlight}
-      </div>
+      </>
     );
   }
 }
