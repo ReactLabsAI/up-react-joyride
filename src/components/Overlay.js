@@ -180,8 +180,15 @@ export default class JoyrideOverlay extends React.Component {
 
   render() {
     const { mouseOverSpotlight, showSpotlight } = this.state;
-    const { disableOverlay, disableOverlayClose, lifecycle, onClickOverlay, placement, styles } =
-      this.props;
+    const {
+      disableOverlay,
+      disableOverlayClose,
+      lifecycle,
+      onClickOverlay,
+      placement,
+      styles,
+      target,
+    } = this.props;
 
     if (disableOverlay || lifecycle !== LIFECYCLE.TOOLTIP) {
       return null;
@@ -223,6 +230,24 @@ export default class JoyrideOverlay extends React.Component {
 
     const { backgroundColor, mixBlendMode, ...stylesOverlaySvg } = stylesOverlay;
 
+    let overlaySpotlightDimension = {
+      width: this.spotlightStyles.width,
+      height: this.spotlightStyles.height,
+      x: this.spotlightStyles.left,
+      y: this.spotlightStyles.top,
+      r: this.spotlightStyles.borderRadius,
+    };
+
+    if (target === 'body') {
+      overlaySpotlightDimension = {
+        width: 0,
+        height: 0,
+        x: 0,
+        y: 0,
+        r: 0,
+      };
+    }
+
     return (
       <>
         <OverlaySvg
@@ -232,17 +257,13 @@ export default class JoyrideOverlay extends React.Component {
             pointerEvents: 'none',
             width: '100vw',
             height: '100vh',
-            opacity: 0.3,
+            opacity: 0.5,
           }}
           pstyles={{
             pointerEvents: 'auto',
           }}
-          width={this.spotlightStyles.width}
-          height={this.spotlightStyles.height}
-          x={this.spotlightStyles.left}
-          y={this.spotlightStyles.top}
-          r={this.spotlightStyles.borderRadius}
           onClick={onClickOverlay}
+          {...overlaySpotlightDimension}
         />
         {spotlight}
       </>

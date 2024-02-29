@@ -99,6 +99,7 @@ function makeOverlayPath({ width, height, x = 0, y = 0, r = 0 }) {
 }
 
 function OverlaySvg({ width, height, x, y, r, styles, pstyles }) {
+  console.log({ type: 'OverlaySvg props', width, height, x, y, r, styles, pstyles });
   const pathDefinition = React.useMemo(
     () => makeOverlayPath({ width, height, x, y, r }),
     [width, height, x, y, r],
